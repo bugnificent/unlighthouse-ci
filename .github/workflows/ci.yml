@@ -15,7 +15,7 @@ jobs:
         run: npm install -g @unlighthouse/cli puppeteer netlify-cli
 
       - name: Unlighthouse assertions and client
-        run: unlighthouse-ci --site yusufasik.com --debug --build-static
+        run: unlighthouse-ci --site simplysites.co.uk --debug --build-static --no-cache --throttle --samples 3
 
       - name: Deploy
         uses: netlify/actions/cli@master

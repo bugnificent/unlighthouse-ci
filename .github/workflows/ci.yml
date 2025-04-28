@@ -19,7 +19,11 @@ jobs:
 
       - name: Deploy to Netlify
         run: |
-          npx netlify-cli deploy --dir=.unlighthouse --prod --message="New Release Deploy from GitHub Actions" --auth $NETLIFY_AUTH_TOKEN --site $NETLIFY_SITE_ID
+         npx netlify-cli deploy \
+         --dir=.unlighthouse \
+         --prod \
+         --auth=${{ secrets.NETLIFY_AUTH_TOKEN }} \
+         --site=${{ secrets.NETLIFY_SITE_ID }} \
+         --json
         env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+         CI: true

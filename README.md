@@ -144,7 +144,7 @@ pipeline {
         stage('Archive Reports') {
             steps {
                 sh 'zip -r lighthouse-report-${BUILD_NUMBER}.zip lighthouse-accessibility-report-${BUILD_NUMBER}.html'
-                archiveArtifacts artifacts: 'allure-report.zip,lighthouse-report-${BUILD_NUMBER}.zip', allowEmptyArchive: false, onlyIfSuccessful: true
+                archiveArtifacts artifacts: 'lighthouse-report-${BUILD_NUMBER}.zip', allowEmptyArchive: false, onlyIfSuccessful: true
             }
         }
     }

@@ -15,11 +15,12 @@ jobs:
         run: npm install -g @unlighthouse/cli puppeteer netlify-cli
 
       - name: Unlighthouse assertions and client
-        run: unlighthouse-ci --site yusufasik.com --build-static --debug --throttle --no-cache --samples 3
+        run: unlighthouse-ci --site yusufasik.com --debug --build-static --throttle --no-cache --samples 3
 
-      - name: Deploy to Netlify
-        run: |
-          npx netlify-cli deploy --dir=.unlighthouse --prod --message="New Release Deploy from GitHub Actions" --auth $NETLIFY_AUTH_TOKEN --site $NETLIFY_SITE_ID
+      - name: Deploy
+        uses: netlify/actions/cli@master
+        with:
+         args: deploy --dir=.unlighthouse --prod --message="New Release Deploy from GitHub Actions"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}

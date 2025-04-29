@@ -1,10 +1,10 @@
-# Unlighthouse CI - Automated Website Accessibility & Performance Scanner
+# Unlighthouse CI - Automated Website Accessibility, Performance & Security Scanner
 
 ![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/bugnificent/unlighthouse-ci/ci.yml)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/e8580d81-450f-431a-adf1-9eef8a8c904b/deploy-status)](https://app.netlify.com/sites/bugnificent/deploys)
 
-Automated website scanning using Unlighthouse to check accessibility and performance metrics, with static report generation and Netlify deployment.
+Automated website scanning using Unlighthouse and Dastardly to check accessibility, performance, and security metrics, with static report generation and Netlify deployment.
 
 ## ✨ Features
 
@@ -13,6 +13,7 @@ Automated website scanning using Unlighthouse to check accessibility and perform
 - 🚀 Automatic deployment to Netlify
 - ⚡ Performance metrics (Lighthouse scores)
 - ♿ Accessibility auditing
+- 🔐 DAST scanning with Dastardly by PortSwigger
 - 🔄 CI/CD integration via GitHub Actions
 
 ## 🔧 Prerequisites
@@ -47,19 +48,31 @@ Automated website scanning using Unlighthouse to check accessibility and perform
 
 ## 🛠️ GitHub Actions CI
 
-This project includes a preconfigured GitHub Actions workflow to run Unlighthouse and deploy the reports to Netlify automatically.
+This project includes a preconfigured GitHub Actions workflow to run Unlighthouse and Dastardly together, and deploy the reports to Netlify automatically.
 
 ### 📂 `.github/workflows/ci.yml`
 ```yaml
-name: Assertions and static report
+name: Unlighthouse and Dastardly
 
 on:
-  push:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  checks: write
+  id-token: write
 
 jobs:
   demo:
     runs-on: ubuntu-latest
+    env:
+     SITE_URL: yusufasik.com
     steps:
       - uses: actions/checkout@v4
         with:
@@ -68,8 +81,22 @@ jobs:
       - name: Install Dependencies
         run: npm install -g @unlighthouse/cli puppeteer netlify-cli
 
-      - name: Unlighthouse assertions and client
-        run: unlighthouse-ci --site yusufasik.com --debug --build-static --throttle --no-cache --samples 3
+      - name: Unlighthouse Scan
+        run: unlighthouse-ci --site ${{ env.SITE_URL }} --debug --build-static --throttle --no-cache --samples 3
+
+      - name: Dastardly Scan
+        continue-on-error: true
+        uses: PortSwigger/dastardly-github-action@main
+        with:
+          target-url: ${{ env.SITE_URL }}
+          output-filename: dastardly-report.xml
+
+      - name: Upload security scan results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dastardly-reports
+          path: dastardly-report.xml
 
       - name: Deploy
         uses: netlify/actions/cli@master
@@ -83,6 +110,7 @@ jobs:
 ## 📤 Output
 
 - 🧾 Static site with performance and accessibility reports in `.unlighthouse/`
+- 🧪 DAST results stored as `dastardly-report.xml`
 - 🌍 Automatically deployed to: [https://netlify.accessibility.yusufasik.com](https://netlify.accessibility.yusufasik.com)
 
 ## 📚 License
@@ -92,3 +120,5 @@ This project is licensed under the [MIT License](LICENSE).
 ---
 
 🤝 Feel free to contribute or open issues for enhancements!
+
+

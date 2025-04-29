@@ -84,9 +84,9 @@ jobs:
 - 🧾 Static site with performance and accessibility reports in `.unlighthouse/`
 - 🌍 Automatically deployed to: [https://netlify.accessibility.yusufasik.com](https://netlify.accessibility.yusufasik.com)
 
-## 📄 License
+## 📚 License
 
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](LICENSE).
 
 ---
 

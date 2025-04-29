@@ -45,7 +45,7 @@ jobs:
           path: dastardly-report.xml
   deploy:
     needs: ulhci-and-dastardly
-    name: Deploy to Vercel
+    name: Deploy to Netlify
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

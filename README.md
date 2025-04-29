@@ -51,15 +51,42 @@ Automated website scanning using Unlighthouse and Dastardly to check accessibili
 
 This project includes a preconfigured GitHub Actions workflow to run Unlighthouse and Dastardly together, and deploy the reports to Netlify automatically.
 
-### 📂 `.github/workflows/ci-cd.yml`
+### 📂 `.github/workflows/unlighthouse.yml`
 ```yaml
-name: Unlighthouse and Dastardly
+name: Unlighthouse CI Report
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
+
+jobs:
+  UnlighthouseCI:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Dependencies
+        run: npm install -g @unlighthouse/cli puppeteer netlify-cli
+
+      - name: Unlighthouse assertions and client
+        run: unlighthouse-ci --site yusufasik.com --debug --build-static --throttle --no-cache --samples 3
+
+      - name: Deploy
+        uses: netlify/actions/cli@master
+        with:
+         args: deploy --dir=.unlighthouse --prod --message="New Release Deploy from GitHub Actions"
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+```
+
+### 📂 `.github/workflows/dastardly.yml`
+```yaml
+name: Dastardly Report
+
+on:
+  workflow_dispatch:
   pull_request:
     branches:
       - main
@@ -70,21 +97,13 @@ permissions:
   id-token: write
 
 jobs:
-  ulhci-and-dastardly:
-    name: UnlighthouseCI and Dastardly Scan
+  dastardly:
+    name: Dastardly Scan
     runs-on: ubuntu-latest
     env:
       SITE_URL: https://yusufasik.com
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Install Dependencies
-        run: npm install -g @unlighthouse/cli puppeteer netlify-cli
-        
-      - name: Unlighthouse Scan
-        run: unlighthouse-ci --site ${{ env.SITE_URL }} --debug --build-static --throttle --no-cache --samples 3
-        
       - name: Dastardly Scan
         continue-on-error: true
         uses: PortSwigger/dastardly-github-action@main
@@ -98,18 +117,6 @@ jobs:
         with:
           name: dastardly-reports
           path: dastardly-report.xml
-  deploy:
-    needs: ulhci-and-dastardly
-    name: Deploy to Vercel
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: netlify/actions/cli@master
-        with:
-          args: deploy --dir=.unlighthouse --prod --message="New Release Deploy from GitHub Actions"
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
 ```
 
 ## 🤖 Jenkins Integration (Optional)

@@ -1,8 +1,18 @@
-name: Assertions and static report
+name: Unlighthouse and Dastardly
 
 on:
-  push:
   workflow_dispatch:
+  push:
+    branches:
+      - main  # Trigger on push to the main branch
+  pull_request:
+    branches:
+      - main  # Trigger on pull request targeting the main branch
+
+permissions:
+  contents: read
+  checks: write
+  id-token: write
 
 jobs:
   demo:
@@ -15,8 +25,22 @@ jobs:
       - name: Install Dependencies
         run: npm install -g @unlighthouse/cli puppeteer netlify-cli
 
-      - name: Unlighthouse assertions and client
+      - name: Unlighthouse Scan
         run: unlighthouse-ci --site yusufasik.com --debug --build-static --throttle --no-cache --samples 3
+
+      - name: Dastardly Scan
+        continue-on-error: true 
+        uses: PortSwigger/dastardly-github-action@main
+        with:
+          target-url: 'https://ci-cdtest.vercel.app'
+          output-filename: dastardly-report.xml
+
+      - name: Upload security scan results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dastardly-reports
+          path: dastardly-report.xml
 
       - name: Deploy
         uses: netlify/actions/cli@master

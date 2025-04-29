@@ -3,6 +3,7 @@ pipeline {
 
      environment {
        BUILD_NUM ="${BUILD_NUMBER}"
+       SITE = 'yusufasik.com'
      }
 
      stages {
@@ -10,7 +11,7 @@ pipeline {
            stage('Generate Lighthouse Accessibility Report') {
               steps {
               // Generate Lighthouse Report
-               sh 'npx lighthouse yusufasik.com --output=html --output-path=lighthouse-accessibility-report-${BUILD_NUMBER}.html --chrome-flags="--headless --no-sandbox --disable-gpu --disable-dev-shm-usage"'
+               sh 'npx lighthouse ${env.SITE} --output=html --output-path=lighthouse-accessibility-report-${BUILD_NUMBER}.html --chrome-flags="--headless --no-sandbox --disable-gpu --disable-dev-shm-usage"'
               }
          }
 
@@ -32,7 +33,7 @@ pipeline {
                 // Lighthouse copy for zip
                 sh 'zip -r lighthouse-report-${BUILD_NUMBER}.zip lighthouse-accessibility-report-${BUILD_NUMBER}.html'
 
-                archiveArtifacts artifacts: 'allure-report.zip,lighthouse-report-${BUILD_NUMBER}.zip', allowEmptyArchive: false, onlyIfSuccessful: true
+                archiveArtifacts artifacts: 'lighthouse-report-${BUILD_NUMBER}.zip', allowEmptyArchive: false, onlyIfSuccessful: true
             }
         }
     }

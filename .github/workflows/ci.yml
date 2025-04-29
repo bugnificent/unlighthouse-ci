@@ -17,6 +17,8 @@ permissions:
 jobs:
   demo:
     runs-on: ubuntu-latest
+    env:
+      SITE_URL: yusufasik.com
     steps:
       - uses: actions/checkout@v4
         with:
@@ -26,13 +28,13 @@ jobs:
         run: npm install -g @unlighthouse/cli puppeteer netlify-cli
 
       - name: Unlighthouse Scan
-        run: unlighthouse-ci --site yusufasik.com --debug --build-static --throttle --no-cache --samples 3
+        run: unlighthouse-ci --site ${{ env.SITE_URL }} --debug --build-static --throttle --no-cache --samples 3
 
       - name: Dastardly Scan
         continue-on-error: true 
         uses: PortSwigger/dastardly-github-action@main
         with:
-          target-url: 'https://ci-cdtest.vercel.app'
+          target-url: ${{ env.SITE_URL }}
           output-filename: dastardly-report.xml
 
       - name: Upload security scan results

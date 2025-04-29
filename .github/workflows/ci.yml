@@ -1,7 +1,7 @@
 name: Assertions and static report
 
 on:
-  push:
+  workflow_dispatch:
 
 jobs:
   demo:
@@ -14,12 +14,13 @@ jobs:
       - name: Install Dependencies
         run: npm install -g @unlighthouse/cli puppeteer netlify-cli
 
-      - name: Run Unlighthouse and Build Report
-        run: unlighthouse-ci --site yusufasik.com --debug --build-static
+      - name: Unlighthouse assertions and client
+        run: unlighthouse-ci --site yusufasik.com --debug --build-static --throttle --no-cache --samples 3
 
-      - name: Deploy to Netlify
+      - name: Deploy
+        uses: netlify/actions/cli@master
+        with:
+         args: deploy --dir=.unlighthouse --prod --message="New Release Deploy from GitHub Actions"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-        run: |
-          netlify deploy --dir=.unlighthouse --prod --message="New Release Deploy from GitHub Actions" --site $NETLIFY_SITE_ID

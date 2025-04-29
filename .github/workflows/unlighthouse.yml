@@ -12,7 +12,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install Dependencies
-        run: npm install -g @unlighthouse/cli @unlighthouse/core puppeteer netlify-cli 
+        run: npm install -g @unlighthouse/cli puppeteer netlify-cli 
 
       - name: Unlighthouse assertions and client
         run: unlighthouse-ci --site yusufasik.com --debug --build-static --throttle --no-cache --samples 3

@@ -70,39 +70,43 @@ permissions:
   id-token: write
 
 jobs:
-  demo:
+  ulhci-and-dastardly:
+    name: UnlighthouseCI and Dastardly Scan
     runs-on: ubuntu-latest
     env:
-     SITE_URL: yusufasik.com
+      SITE_URL: yusufasik.com
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Install Dependencies
         run: npm install -g @unlighthouse/cli puppeteer netlify-cli
-
+        
       - name: Unlighthouse Scan
         run: unlighthouse-ci --site ${{ env.SITE_URL }} --debug --build-static --throttle --no-cache --samples 3
-
+        
       - name: Dastardly Scan
         continue-on-error: true
         uses: PortSwigger/dastardly-github-action@main
         with:
           target-url: ${{ env.SITE_URL }}
           output-filename: dastardly-report.xml
-
+          
       - name: Upload security scan results
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: dastardly-reports
           path: dastardly-report.xml
-
-      - name: Deploy
-        uses: netlify/actions/cli@master
+  deploy:
+    needs: ulhci-and-dastardly
+    name: Deploy to Vercel
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: netlify/actions/cli@master
         with:
-         args: deploy --dir=.unlighthouse --prod --message="New Release Deploy from GitHub Actions"
+          args: deploy --dir=.unlighthouse --prod --message="New Release Deploy from GitHub Actions"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}

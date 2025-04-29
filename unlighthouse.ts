@@ -3,7 +3,7 @@ import { defineConfig } from '@unlighthouse/core'
 export default defineConfig({
   site: 'https://yusufasik.com',
   puppeteerPageSetup: async (page) => {
-    // Lazy load içerikleri tetiklemek için scroll işlemi
+    // Lazy load handle script
     await page.evaluate(async () => {
       await new Promise((resolve) => {
         let totalHeight = 0;
@@ -17,7 +17,7 @@ export default defineConfig({
             clearInterval(timer);
             resolve();
           }
-        }, 100); // Her 100ms'de bir 100px kaydır
+        }, 100); // Scroll 100px each 100ms
       });
     });
   },

@@ -54,6 +54,7 @@ This project includes a preconfigured GitHub Actions workflow to run Unlighthous
 name: Assertions and static report
 
 on:
+  push:
   workflow_dispatch:
 
 jobs:

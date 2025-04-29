@@ -110,7 +110,7 @@ jobs:
 ## 📤 Output
 
 - 🧾 Static site with performance and accessibility reports in `.unlighthouse/`
-- 🧪 DAST results stored as artifact `dastardly-report.xml`
+- 🛡️ DAST results stored as artifact `dastardly-report.xml`
 - 🌍 Automatically deployed to: [https://netlify.accessibility.yusufasik.com](https://netlify.accessibility.yusufasik.com)
 
 ## 📚 License

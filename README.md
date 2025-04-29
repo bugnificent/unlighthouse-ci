@@ -53,6 +53,43 @@ Automated website scanning using Unlighthouse and Dastardly to check accessibili
 
 This project includes a preconfigured GitHub Actions workflow to run Unlighthouse and Dastardly together, and deploy the reports to Netlify automatically.
 
+# Unlighthouse Configuration (`unlighthouse.config.ts`) Explanation
+
+## 👀 Overview
+This configuration file customizes how Unlighthouse (a Lighthouse scanner) interacts with your website during analysis.
+
+## Configuration Breakdown
+
+```typescript
+import { defineConfig } from '@unlighthouse/core'
+
+export default defineConfig({
+  // Basic configuration
+  site: 'https://yusufasik.com',
+  
+  // Advanced Puppeteer setup for handling lazy-loaded content
+  puppeteerPageSetup: async (page) => {
+    // Lazy load handling script
+    await page.evaluate(async () => {
+      await new Promise((resolve) => {
+        let totalHeight = 0;
+        const distance = 100;
+        const timer = setInterval(() => {
+          const scrollHeight = document.body.scrollHeight;
+          window.scrollBy(0, distance);
+          totalHeight += distance;
+
+          if (totalHeight >= scrollHeight) {
+            clearInterval(timer);
+            resolve();
+          }
+        }, 100); // Scroll 100px each 100ms
+      });
+    });
+  },
+})
+```
+
 ### 📂 `.github/workflows/unlighthouse.yml`
 ```yaml
 name: Unlighthouse CI Report

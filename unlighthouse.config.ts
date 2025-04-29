@@ -6,28 +6,35 @@ export default defineConfig({
     console.log('Starting lazy-load simulation...');
     // Take initial screenshot
     await page.screenshot({ path: 'before-scroll.png' });
+    
     // Lazy load handle script
     await page.evaluate(async () => {
       console.log('[Browser Context] Scroll script started');
       await new Promise((resolve) => {
         let totalHeight = 0;
         const distance = 100;
-        const timer = setInterval(() => {
+        
+        const scrollAndWait = async () => {
           const scrollHeight = document.body.scrollHeight;
           window.scrollBy(0, distance);
           totalHeight += distance;
+          
           // Added delay after each scroll
-          await new Promise(r => setTimeout(r, 200)) // 200ms delay
+          await new Promise(r => setTimeout(r, 200)); // 200ms delay
           
           if (totalHeight >= scrollHeight) {
-            clearInterval(timer);
             resolve();
+          } else {
+            setTimeout(scrollAndWait, 100); // Continue after delay
           }
-        }, 100); // Scroll 100px each 100ms
+        };
+        
+        scrollAndWait(); // Start the scrolling process
       });
     });
+    
     // Take post-scroll screenshot
     await page.screenshot({ path: 'after-scroll.png' });
-    console.log('[Browser Context] Scroll completed');
+    console.log('Lazy-load simulation completed');
   },
 })

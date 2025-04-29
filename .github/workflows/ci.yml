@@ -1,6 +1,7 @@
 name: Assertions and static report
 
 on:
+  push:
   workflow_dispatch:
 
 jobs:

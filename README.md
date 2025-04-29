@@ -1,7 +1,7 @@
 # ⛵ Unlighthouse CI | 🛡️ Dastardly - Automated Website Accessibility, Performance & Security Scanner
 
 ![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/bugnificent/unlighthouse-ci/dastardly.yml)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/bugnificent/unlighthouse-ci/unlighthouse.yml)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/e8580d81-450f-431a-adf1-9eef8a8c904b/deploy-status)](https://app.netlify.com/sites/bugnificent/deploys)
 
 Automated website scanning using Unlighthouse and Dastardly to check accessibility, performance, and security metrics, with static report generation and Netlify deployment. Jenkins support for Lighthouse accessibility audits is also included.

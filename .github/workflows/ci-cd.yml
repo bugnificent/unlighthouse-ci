@@ -2,9 +2,6 @@ name: Unlighthouse and Dastardly
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main

@@ -3,7 +3,7 @@ import { defineConfig } from '@unlighthouse/core'
 export default defineConfig({
   site: 'https://yusufasik.com',
   puppeteerPageSetup: async (page) => {
-    console.log('Starting scroll simulation...');
+    console.log('Starting lazy-load simulation...');
     // Take initial screenshot
     await page.screenshot({ path: 'before-scroll.png' });
     // Lazy load handle script
@@ -16,7 +16,9 @@ export default defineConfig({
           const scrollHeight = document.body.scrollHeight;
           window.scrollBy(0, distance);
           totalHeight += distance;
-
+          // Added delay after each scroll
+          await new Promise(r => setTimeout(r, 200)) // 200ms delay
+          
           if (totalHeight >= scrollHeight) {
             clearInterval(timer);
             resolve();

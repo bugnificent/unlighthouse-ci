@@ -15,7 +15,7 @@ jobs:
         run: npm install -g @unlighthouse/cli puppeteer netlify-cli
 
       - name: Unlighthouse assertions and client
-        run: unlighthouse-ci --site wfc23-variables-cloneable.webflow.io --debug --build-static --no-cache --throttle --samples 3
+        run: unlighthouse-ci --site yusufasik.com --debug --build-static
 
       - name: Deploy
         uses: netlify/actions/cli@master

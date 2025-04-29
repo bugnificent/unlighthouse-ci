@@ -45,7 +45,9 @@ Automated website scanning using Unlighthouse and Dastardly to check accessibili
    - 🆕 Create a new site on Netlify
    - 🔐 Obtain your `NETLIFY_AUTH_TOKEN` and `NETLIFY_SITE_ID`
    - 🔒 Store them in your GitHub repository under `Settings > Secrets and variables > Actions`
-   - 🧱 Jenkins (optional for advanced reporting)
+   - ![LeeroyGIF](https://github.com/user-attachments/assets/6c4c6ddb-d1a7-4d43-a05c-be8d4e97119e)
+
+### And of course, Jenkins. (optional for advanced reporting)
 
 ## 🛠️ GitHub Actions CI/CD
 

@@ -24,9 +24,6 @@ export default defineConfig({
       PerformanceObserver.setResourceTimingBufferSize(500);
     });
 
-    // Initial screenshot for debugging (disable in production)
-    await page.screenshot({ path: 'unlighthouse-scroll-start.png' });
-
     // Main scroll handler with enhanced waiting
     await page.evaluate(async () => {
       console.log('[Browser] Starting scroll simulation');
@@ -79,9 +76,6 @@ export default defineConfig({
       
       console.log(`[Browser] Reached scroll end (${totalHeight}px)`);
     });
-
-    // Final screenshot (disable in production)
-    await page.screenshot({ path: 'unlighthouse-scroll-end.png' });
     
     console.log('[Node] Page analysis completed');
   },

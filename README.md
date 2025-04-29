@@ -4,8 +4,7 @@
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/bugnificent/unlighthouse-ci/ci-cd.yml)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/e8580d81-450f-431a-adf1-9eef8a8c904b/deploy-status)](https://app.netlify.com/sites/bugnificent/deploys)
 
-Automated website scanning using Unlighthouse and Dastardly to check accessibility, performance, and security metrics, with static report generation and Netlify deployment.
-
+Automated website scanning using Unlighthouse and Dastardly to check accessibility, performance, and security metrics, with static report generation and Netlify deployment. Jenkins support for Lighthouse accessibility audits is also included.
 ## ✨ Features
 
 - 🔍 Comprehensive website scanning with Unlighthouse
@@ -14,6 +13,7 @@ Automated website scanning using Unlighthouse and Dastardly to check accessibili
 - ⚡ Performance metrics (Lighthouse scores)
 - ♿ Accessibility auditing
 - 🔐 DAST scanning with Dastardly by PortSwigger
+- 🧪 Lighthouse auditing via Jenkins
 - 🔄 CI/CD integration via GitHub Actions
 
 ## 🔧 Prerequisites
@@ -45,6 +45,7 @@ Automated website scanning using Unlighthouse and Dastardly to check accessibili
    - 🆕 Create a new site on Netlify
    - 🔐 Obtain your `NETLIFY_AUTH_TOKEN` and `NETLIFY_SITE_ID`
    - 🔒 Store them in your GitHub repository under `Settings > Secrets and variables > Actions`
+   - 🧱 Jenkins (optional for advanced reporting)
 
 ## 🛠️ GitHub Actions CI/CD
 
@@ -107,10 +108,66 @@ jobs:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
 ```
 
+## 🤖 Jenkins Integration (Optional)
+
+If you are using Jenkins, the following pipeline allows you to generate, publish, and archive Lighthouse accessibility reports:
+
+### 📂 `Jenkinsfile`
+```groovy
+pipeline {
+    agent any
+
+    environment {
+        BUILD_NUM = "${BUILD_NUMBER}"
+    }
+
+    stages {
+        stage('Generate Lighthouse Accessibility Report') {
+            steps {
+                sh 'npx lighthouse yusufasik.com --output=html --output-path=lighthouse-accessibility-report-${BUILD_NUMBER}.html --chrome-flags="--headless --no-sandbox --disable-gpu --disable-dev-shm-usage"'
+            }
+        }
+
+        stage('Publish Lighthouse Accessibility Report') {
+            steps {
+                publishHTML(target: [
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: '.',
+                    reportFiles: 'lighthouse-accessibility-report-${BUILD_NUMBER}.html',
+                    reportName: 'Accessibility Report Build #${BUILD_NUMBER}'
+                ])
+            }
+        }
+
+        stage('Archive Reports') {
+            steps {
+                sh 'zip -r lighthouse-report-${BUILD_NUMBER}.zip lighthouse-accessibility-report-${BUILD_NUMBER}.html'
+                archiveArtifacts artifacts: 'allure-report.zip,lighthouse-report-${BUILD_NUMBER}.zip', allowEmptyArchive: false, onlyIfSuccessful: true
+            }
+        }
+    }
+
+    post {
+        always {
+            emailext (
+                to: 'contact@yusufasik.com',
+                subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: '${DEFAULT_CONTENT}',
+                attachLog: true,
+                attachmentsPattern: 'lighthouse-report-${BUILD_NUMBER}.zip'
+            )
+        }
+    }
+}
+```
+
 ## 📤 Output
 
-- ⛵ Static site with performance and accessibility reports in `.unlighthouse/`
-- 🛡️ DAST results stored as artifact `dastardly-report.xml`
+- 🧾 Static site with performance and accessibility reports in `.unlighthouse/`
+- 🧪 DAST results stored as `dastardly-report.xml`
+- 🗂️ Lighthouse accessibility reports published via Jenkins HTML Publisher plugin and sended via email extension.
 - 🌍 Automatically deployed to: [https://netlify.accessibility.yusufasik.com](https://netlify.accessibility.yusufasik.com)
 
 ## 📚 License
@@ -120,5 +177,3 @@ This project is licensed under the [MIT License](LICENSE).
 ---
 
 🤝 Feel free to contribute or open issues for enhancements!
-
-

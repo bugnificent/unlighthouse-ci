@@ -53,7 +53,7 @@ Automated website scanning using Unlighthouse and Dastardly to check accessibili
 
 This project includes a preconfigured GitHub Actions workflow to run Unlighthouse and Dastardly together, and deploy the reports to Netlify automatically.
 
-# Unlighthouse Configuration (`unlighthouse.config.ts`) Explanation
+## Unlighthouse Configuration (`unlighthouse.config.ts`) Explanation
 
 ## 👀 Overview
 This configuration file customizes how Unlighthouse (a Lighthouse scanner) interacts with your website during analysis.

@@ -115,51 +115,56 @@ If you are using Jenkins, the following pipeline allows you to generate, publish
 ### 📂 `Jenkinsfile`
 ```groovy
 pipeline {
-    agent any
+     agent any
 
-    environment {
-        BUILD_NUM = "${BUILD_NUMBER}"
-    }
+     environment {
+       BUILD_NUM ="${BUILD_NUMBER}"
+       SITE = 'yusufasik.com'
+     }
 
-    stages {
-        stage('Generate Lighthouse Accessibility Report') {
+     stages {
+
+           stage('Generate Lighthouse Accessibility Report') {
+              steps {
+              // Generate Lighthouse Report
+               sh 'npx lighthouse ${env.SITE} --output=html --output-path=lighthouse-accessibility-report-${BUILD_NUMBER}.html --chrome-flags="--headless --no-sandbox --disable-gpu --disable-dev-shm-usage"'
+              }
+         }
+
+           stage('Publish Lighthouse Accessibility Report') {
+                steps {
+                        publishHTML(target: [
+                          allowMissing: false,
+                          alwaysLinkToLastBuild: true,
+                          keepAll: true,
+                          reportDir: '.',
+                          reportFiles: 'lighthouse-accessibility-report-${BUILD_NUMBER}.html',
+                          reportName: 'Accessibility Report Build #${BUILD_NUMBER}'
+                        ])
+                }
+         }
+
+           stage('Archive Reports') {
             steps {
-                sh 'npx lighthouse yusufasik.com --output=html --output-path=lighthouse-accessibility-report-${BUILD_NUMBER}.html --chrome-flags="--headless --no-sandbox --disable-gpu --disable-dev-shm-usage"'
-            }
-        }
-
-        stage('Publish Lighthouse Accessibility Report') {
-            steps {
-                publishHTML(target: [
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: '.',
-                    reportFiles: 'lighthouse-accessibility-report-${BUILD_NUMBER}.html',
-                    reportName: 'Accessibility Report Build #${BUILD_NUMBER}'
-                ])
-            }
-        }
-
-        stage('Archive Reports') {
-            steps {
+                // Lighthouse copy for zip
                 sh 'zip -r lighthouse-report-${BUILD_NUMBER}.zip lighthouse-accessibility-report-${BUILD_NUMBER}.html'
+
                 archiveArtifacts artifacts: 'lighthouse-report-${BUILD_NUMBER}.zip', allowEmptyArchive: false, onlyIfSuccessful: true
             }
         }
     }
+       post {
+         always {
 
-    post {
-        always {
-            emailext (
-                to: 'contact@yusufasik.com',
-                subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                body: '${DEFAULT_CONTENT}',
-                attachLog: true,
-                attachmentsPattern: 'lighthouse-report-${BUILD_NUMBER}.zip'
-            )
-        }
-    }
+             emailext (
+                 to: 'contact@yusufasik.com',
+                 subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                 body: '${DEFAULT_CONTENT}',
+                 attachLog: true,
+                 attachmentsPattern: 'lighthouse-report-${BUILD_NUMBER}.zip'
+             )
+         }
+     }
 }
 ```
 

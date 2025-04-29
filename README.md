@@ -74,7 +74,7 @@ jobs:
     name: UnlighthouseCI and Dastardly Scan
     runs-on: ubuntu-latest
     env:
-      SITE_URL: yusufasik.com
+      SITE_URL: https://yusufasik.com
     steps:
       - uses: actions/checkout@v4
         with:

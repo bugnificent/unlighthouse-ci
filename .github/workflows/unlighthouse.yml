@@ -21,16 +21,6 @@ jobs:
 
       - name: Run Unlighthouse
         run: npx unlighthouse-ci --site yusufasik.com --debug --build-static --throttle --no-cache --samples 3
-
-      - name: Check for screenshots
-        run: |
-             ls -la
-             if [ -f "after-scroll.png" ]; then
-             echo "Scroll script executed successfully"
-             else
-             echo "Scroll script may have failed"
-             exit 1
-             fi
              
       - name: Deploy
         uses: netlify/actions/cli@master

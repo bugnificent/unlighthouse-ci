@@ -1,4 +1,4 @@
-# Unlighthouse CI - Automated Website Accessibility, Performance & Security Scanner
+# ⛵ Unlighthouse CI | 🛡️ Dastardly - Automated Website Accessibility, Performance & Security Scanner
 
 ![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/bugnificent/unlighthouse-ci/ci.yml)
@@ -109,7 +109,7 @@ jobs:
 
 ## 📤 Output
 
-- 🧾 Static site with performance and accessibility reports in `.unlighthouse/`
+- ⛵ Static site with performance and accessibility reports in `.unlighthouse/`
 - 🛡️ DAST results stored as artifact `dastardly-report.xml`
 - 🌍 Automatically deployed to: [https://netlify.accessibility.yusufasik.com](https://netlify.accessibility.yusufasik.com)
 

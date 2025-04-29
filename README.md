@@ -46,7 +46,7 @@ Automated website scanning using Unlighthouse and Dastardly to check accessibili
    - 🔐 Obtain your `NETLIFY_AUTH_TOKEN` and `NETLIFY_SITE_ID`
    - 🔒 Store them in your GitHub repository under `Settings > Secrets and variables > Actions`
 
-## 🛠️ GitHub Actions CI
+## 🛠️ GitHub Actions CI/CD
 
 This project includes a preconfigured GitHub Actions workflow to run Unlighthouse and Dastardly together, and deploy the reports to Netlify automatically.
 
@@ -110,7 +110,7 @@ jobs:
 ## 📤 Output
 
 - 🧾 Static site with performance and accessibility reports in `.unlighthouse/`
-- 🧪 DAST results stored as `dastardly-report.xml`
+- 🧪 DAST results stored as artifact `dastardly-report.xml`
 - 🌍 Automatically deployed to: [https://netlify.accessibility.yusufasik.com](https://netlify.accessibility.yusufasik.com)
 
 ## 📚 License

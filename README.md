@@ -50,7 +50,7 @@ Automated website scanning using Unlighthouse and Dastardly to check accessibili
 
 This project includes a preconfigured GitHub Actions workflow to run Unlighthouse and Dastardly together, and deploy the reports to Netlify automatically.
 
-### 📂 `.github/workflows/ci.yml`
+### 📂 `.github/workflows/ci-cd.yml`
 ```yaml
 name: Unlighthouse and Dastardly
 
